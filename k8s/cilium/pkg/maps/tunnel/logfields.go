@@ -1,0 +1,19 @@
+// SPDX-License-Identifier: Apache-2.0
+// Copyright 2018 Authors of Cilium
+
+package tunnel
+
+import (
+	"github.com/cilium/cilium/pkg/logging"
+	"github.com/cilium/cilium/pkg/logging/logfields"
+)
+
+const (
+	fieldEndpoint = "endpoint"
+	fieldPrefix   = "prefix"
+	fieldKey      = "key"
+)
+
+var (
+	log = logging.DefaultLogger.WithField(logfields.LogSubsys, "map-tunnel")
+)
