@@ -1,0 +1,11 @@
+os
+
+xilinx-linux
+
+slow path:
+
+ovs
+no dpdk
+
+fast path:
+p4
