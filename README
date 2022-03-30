@@ -1,11 +1,88 @@
-os
 
-xilinx-linux
+case1:
+基本功能: virtualbox, task: os裁减, ebs driver
+virt: virtualbox + centos7.7 + kernel5.16(定制化, -fs, net, driver) + kvm/qemu(修改cpu, mem) + virtio(host) + ovs 2.12
+      + vm(centos7.7 + kernel5.16 + virtio)
 
-slow path:
+container: 
+      virtualbox + centos7.7 + kernel5.16(定制化, -fs, net, driver) + k8s + cilium + virtio(host)
+      + container
 
-ovs
-no dpdk
+case2:
+cilium修改, 增加ebpf相关功能(容器场景)
+virt: virtualbox + centos7.7 + kernel5.16(定制化, -fs, net, driver +驱动开发) + kvm/qemu(修改cpu, mem) + ovs 2.12 + vf fwd(host vf to guest virtio)
+      + vm(centos7.7 + kernel5.16 + virtio)
+container: 
+      virtualbox + centos7.7 + kernel5.16(定制化, -fs, net, driver +驱动开发) + k8s + cilium + fpga数据面(fastpath, lb, firewall, ebpf控制) + vffwd(vf2virtio, ebpf控制)
+      + container
+-----------------------
+case3:
+模拟p4数据面并使用ebpf控制: 模拟多个cpu, 模拟从智能网卡管理host cpu, ovs快转卸载到模拟p4(p4c编译p4代码至ebpf)
+virt: virtualbox + centos7.7 + kernel5.16(定制化, -fs, net, driver +驱动开发) + kvm/qemu(修改cpu, mem) + ovs 2.12 + vf fwd(host vf to guest virtio)
+      + vm(centos7.7 + kernel5.16 + virtio)
+container: 
+      virtualbox + centos7.7 + kernel5.16(定制化, -fs, net, driver +驱动开发) + k8s + cilium + fpga数据面(fastpath, lb, firewall, ebpf控制) + vffwd(vf2virtio, ebpf控制)
+      + container
 
-fast path:
-p4
+case4:
+vf+rdma扩展: 1288, task: vf2virtio, erdma(srd)
+virt: 1288 server + centos7.7 + kernel5.16(定制化, -fs, net, driver) + kvm/qemu(修改cpu, mem) + 82599vf(host) + ovs 2.12
+      + vm(centos7.7 + kernel5.16 + virtio)
+container: 
+      1288 server + centos7.7 + kernel5.16(定制化, -fs, net, driver) + k8s + cilium + 82599vf(host) + vffwd(vf2virtio, firewall, ebpf控制)
+      + container
+
+case5:      
+环境1288, fpga开发板, vf driver, 从智能网卡管理host cpu, ovs快转卸载到fpga, cilium修改, 使用p4实现fpga数据面控制(容器场景)
+virt: 1288 server + fpga开发板 + centos7.7 + kernel5.16(定制化, -fs, net, driver +驱动开发) + kvm/qemu(修改cpu, mem) + fpga开发板(host) + ovs 2.12 + vf fwd(host vf to guest virtio)
+      + vm(centos7.7 + kernel5.16 + virtio)
+container: 
+      1288 server + fpga开发板 + centos7.7 + kernel5.16(定制化, -fs, net, driver +驱动开发) + k8s + cilium + fpga开发板(host) + fpga数据面(fastpath, lb, firewall, ebpf控制) + vffwd(vf2virtio, ebpf控制)
+      + container
+
+case5:
+fpga p4的扩展点(ebpf)
+
+case6:
+llvm p4 plugin自定义语法
+
+问题列表:
+
+环境:
+82599
+智能网卡开发板
+
+os:
+1: 裁减范围
+
+kernel:
+1: kvm管理网卡和主机cpu
+2: kvm管理网卡和主机内存
+
+qemu:
+1: 模拟主板+智能网卡
+
+driver:
+1: fpga vf 
+2: ebs
+3: rdma
+4: virtio(fpga出virtio)
+
+dpdk:
+1: fpga vf pmd(vf2virtio)
+
+ovs:
+1: fp->p4
+
+cilium:
+1: ebpf增强
+
+fpga:
+1: arm
+2: fp
+
+
+1: 虚拟化场景下vm需要使用virtio驱动, 网卡提供vf驱动, vffwd转发vf上的报文至virtio
+2: 容器场景下, 容器分配的是vf网卡还是virtio网卡, virtio网卡可以重用vswitch能力,比如安全组
+3: 容器化场景, cilium(lb, firewall, 监控)
+4: istio + cilium
