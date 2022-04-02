@@ -40,11 +40,18 @@ container:
       1288 server + fpga开发板 + centos7.7 + kernel5.16(定制化, -fs, net, driver +驱动开发) + k8s + cilium + fpga开发板(host) + fpga数据面(fastpath, lb, firewall, ebpf控制) + vffwd(vf2virtio, ebpf控制)
       + container
 
-case5:
+case6:
 fpga p4的扩展点(ebpf)
 
-case6:
+case7:
 llvm p4 plugin自定义语法
+
+case8:
+用户态驱动,使用pmd驱动从virtio收发报文,提升envoy/meson性能, 存储需要单独用户态驱动?
+
+case9:
+tunnel协议, 存储协议, 加密算法卸载
+
 
 问题列表:
 
@@ -72,17 +79,21 @@ dpdk:
 1: fpga vf pmd(vf2virtio)
 
 ovs:
-1: fp->p4
+1: ovs fastpath->p4
 
 cilium:
-1: ebpf增强
+1: 使用ebpf扩展功能
 
 fpga:
 1: arm
 2: fp
 
+cases:
+1: os + qemu + ovs + ovs->kernel ebpf + p4(ovs fastpath -> ebpf)
+2: istio + envoy + 用户态协议栈(libuinet etc + pmd收包) + cilium + kernel转发
+3: istio + envoy + 用户态协议栈 + cilium + ovs + p4编译数据面 + kernel转发
+4: istio + envoy + 用户态协议栈 + cilium + vf2virtio + 开发板(ovs + p4编译数据面, ebpf扩展点, 出vf接口或virtio接口)
 
-1: 虚拟化场景下vm需要使用virtio驱动, 网卡提供vf驱动, vffwd转发vf上的报文至virtio
-2: 容器场景下, 容器分配的是vf网卡还是virtio网卡, virtio网卡可以重用vswitch能力,比如安全组
-3: 容器化场景, cilium(lb, firewall, 监控)
-4: istio + cilium
+
+cilium支持dnat
+vffwd
