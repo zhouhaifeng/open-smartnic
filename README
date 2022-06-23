@@ -1,11 +1,11 @@
 
 case1:
 基本功能: virtualbox, task: os裁减, ebs driver
-virt: virtualbox + centos7.7 + kernel5.16(定制化, -fs, net, driver) + kvm/qemu(修改cpu, mem) + virtio(host) + ovs 2.12
+virt: virtualbox + centos7.7 + kernel5.16(定制化, -fs, net, driver) + kvm/qemu(修改cpu, mem) + virtio/virtio-blk(host) + ovs 2.12
       + vm(centos7.7 + kernel5.16 + virtio)
 
 container: 
-      virtualbox + centos7.7 + kernel5.16(定制化, -fs, net, driver) + k8s + cilium + virtio(host)
+      virtualbox + centos7.7 + kernel5.16(定制化, -fs, net, driver) + k8s + cilium + virtio(host)/virtio-blk
       + container
 
 case2:
@@ -13,7 +13,7 @@ cilium修改, 增加ebpf相关功能(容器场景)
 virt: virtualbox + centos7.7 + kernel5.16(定制化, -fs, net, driver +驱动开发) + kvm/qemu(修改cpu, mem) + ovs 2.12 + vf fwd(host vf to guest virtio)
       + vm(centos7.7 + kernel5.16 + virtio)
 container: 
-      virtualbox + centos7.7 + kernel5.16(定制化, -fs, net, driver +驱动开发) + k8s + cilium + fpga数据面(fastpath, lb, firewall, ebpf控制) + vffwd(vf2virtio, ebpf控制)
+      virtualbox + centos7.7 + kernel5.16(定制化, -fs, net, driver +驱动开发) + k8s + cilium + ebpf数据面(fastpath, lb, firewall, ebpf控制)
       + container
 -----------------------
 case3:
@@ -88,12 +88,11 @@ fpga:
 1: arm
 2: fp
 
+硬件:
+(国产无超过25G网卡)
+开发板:10x
+10x, 25x, 100x, 200x, 400x
+
 cases:
-1: os + qemu + ovs + ovs->kernel ebpf + p4(ovs fastpath -> ebpf)
-2: istio + envoy + 用户态协议栈(libuinet etc + pmd收包) + cilium + kernel转发
-3: istio + envoy + 用户态协议栈 + cilium + ovs + p4编译数据面 + kernel转发
-4: istio + envoy + 用户态协议栈 + cilium + vf2virtio + 开发板(ovs + p4编译数据面, ebpf扩展点, 出vf接口或virtio接口)
-
-
-cilium支持dnat
-vffwd
+1: os + qemu + ovs + ovs p4
+2: istio + envoy + cilium
