@@ -8,11 +8,9 @@ extern "C" {
 void hh_init()
 {
     //load config
-    
+
     //dma
-    /* NIC is smart enough and can locate the end (userspace) buffer and
-    DMA there directly. That requires parsing TCP/UDP headers, etc., or
-    having a more versatile API like infiniband. + extra NIC features.*/
+    /*todo: dma mmap from vfio to userspace, hh_vfio*/
 
     //if up
 }
