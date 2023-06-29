@@ -11,9 +11,11 @@ referance:
 [io_uring-only sendmsg + recvmsg zerocopy](https://lore.kernel.org/io-uring/acc66238-0d27-cd22-dac4-928777a8efbc@gmail.com/T/#m7e2356589fda377861c16abfb443b125cde4d151)
 3. uio
 4. virtio
+[virtio: support advance DMA](https://lwn.net/Articles/886029/)
 5. vfio
 6. vdpa
 7. dpdk
 8. fstack
 9. mtcp
 10. seastar
+11. netmap
